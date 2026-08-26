@@ -42,6 +42,8 @@ private:
 	VkRenderPass renderPass_;
 	VkPipelineLayout pipelineLayout_;
 	VkPipeline graphicsPipeline_;
+	VkCommandPool commandPool_;
+	VkCommandBuffer commandBuffer_;
 
 	void initVulkan_() {
 		createInstance_();
