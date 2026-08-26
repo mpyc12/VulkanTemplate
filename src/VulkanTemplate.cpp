@@ -51,6 +51,9 @@ private:
 		createSwapChain_();
 		createImageViews_();
 		createRenderPass_();
+		createGraphicsPipeline_();
+		createCommandPool_();
+		createCommandBuffer_();
 	}
 
 	void createInstance_() {
@@ -422,5 +425,41 @@ private:
 
 		 vkDestroyShaderModule(device_, vertShaderModule, nullptr);
 		 vkDestroyShaderModule(device_, fragShaderModule, nullptr);
+	 }
+
+	void createCommandPool_() {
+		 uint32_t queueFamilyCount = 0;
+		 vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount, nullptr);
+		 vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+		 vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice_, &queueFamilyCount, queueFamilies.data());
+		
+		 int graphicsFamily = -1;
+		 for (uint32_t i = 0; i < queueFamilyCount; i++) {
+		 	if (queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) {
+				graphicsFamily = i;
+				break;
+			}
+		 }
+
+		 VkCommandPoolCreateInfo poolInfo {};
+		 poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+		 poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+		 poolInfo.queueFamilyIndex = graphicsFamily;
+
+		 if (vkCreateCommandPool(device_, &poolInfo, nullptr, &commandPool_) != VK_SUCCESS) {
+			 cerr << "Failed to create command pool!";
+		 }
+	 }
+
+	 void createCommandBuffer_() {
+		 VkCommandBufferAllocateInfo allocInfo {};
+		 allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		 allocInfo.commandPool = commandPool_;
+		 allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		 allocInfo.commandBufferCount = 1;
+
+		 if (vkAllocateCommandBuffers(device_, &allocInfo, &commandBuffer_) != VK_SUCCESS) {
+			 cerr << "Failed to allocate command buffers!";
+		 }
 	 }
 };
