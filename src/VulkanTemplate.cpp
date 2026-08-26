@@ -496,5 +496,32 @@ private:
 		 if (vkAllocateCommandBuffers(device_, &allocInfo, &commandBuffer_) != VK_SUCCESS) {
 			 cerr << "Failed to allocate command buffers!";
 		 }
+
+		 uint32_t imageIndex;
+		 vkAcquireNextImageKHR(device_, swapChain_, UINT64_MAX, VK_NULL_HANDLE, VK_NULL_HANDLE, &imageIndex);
+		 
+		 VkCommandBufferBeginInfo beginInfo {};
+		 beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		 vkBeginCommandBuffer(commandBuffer_, &beginInfo);
+		 
+		 VkRenderPassBeginInfo renderPassInfo {};
+		 renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+		 renderPassInfo.renderPass = renderPass_;
+		 renderPassInfo.framebuffer = swapChainFramebuffers_[imageIndex];
+		 renderPassInfo.renderArea.offset = {0,0};
+		 renderPassInfo.renderArea.extent = {width_, height_};
+		 
+		 VkClearValue clearColor = {{{0.0f, 0.0f, 0.0f, 1.0f}}};
+		 
+		 renderPassInfo.clearValueCount = 1;
+		 renderPassInfo.pClearValues = &clearColor;
+		 vkCmdBeginRenderPass(commandBuffer_, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+		 vkCmdBindPipeline(commandBuffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline_);
+		 vkCmdDraw(commandBuffer_, 3, 1, 0, 0);
+		 vkCmdEndRenderPass(commandBuffer_);
+		 
+		 if (vkEndCommandBuffer(commandBuffer_) != VK_SUCCESS) {
+			 cerr << "Failed to record command buffer!";
+		 }
 	 }
 };
