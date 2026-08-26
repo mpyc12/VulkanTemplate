@@ -39,6 +39,7 @@ private:
 	VkSurfaceKHR surface_;
 	VkSwapchainKHR swapChain_;
 	vector<VkImageView> swapChainImageViews_;
+	vector<VkFramebuffer> swapChainFramebuffers_;
 	VkRenderPass renderPass_;
 	VkPipelineLayout pipelineLayout_;
 	VkPipeline graphicsPipeline_;
@@ -54,6 +55,7 @@ private:
 		createImageViews_();
 		createRenderPass_();
 		createGraphicsPipeline_();
+		createFramebuffers_();
 		createCommandPool_();
 		createCommandBuffer_();
 	}
@@ -427,6 +429,31 @@ private:
 
 		 vkDestroyShaderModule(device_, vertShaderModule, nullptr);
 		 vkDestroyShaderModule(device_, fragShaderModule, nullptr);
+	 }
+
+	 void createFramebuffers_() {
+		 swapChainFramebuffers_.resize(swapChainImageViews_.size());
+
+		 for (size_t i = 0; i < swapChainImageViews_.size(); i++) {
+			 VkImageView attachments[] = {
+				 swapChainImageViews_[i]
+			 };
+
+			 VkFramebufferCreateInfo framebufferInfo {};
+			 framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+			 framebufferInfo.renderPass = renderPass_;
+			 framebufferInfo.attachmentCount = 1;
+			 framebufferInfo.pAttachments = attachments;
+			
+			 VkExtent2D swapChainExtent = chooseSwapExtent_(querySwapChainSupport_(physicalDevice_).capabilities);
+			 framebufferInfo.width = swapChainExtent.width;
+			 framebufferInfo.height = swapChainExtent.height;
+			 framebufferInfo.layers = 1;
+
+			 if (vkCreateFramebuffer(device_, &framebufferInfo, nullptr, &swapChainFramebuffers_[i]) != VK_SUCCESS) {
+				 cerr << "Failed to create framebuffer!";
+			 }
+		}
 	 }
 
 	void createCommandPool_() {
