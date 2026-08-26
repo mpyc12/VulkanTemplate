@@ -27,6 +27,10 @@ public:
 		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 		// change if you want to allow resize of window [ONLY ALLOW IF CODE WRITTEN TO ALLOW RESIZE]
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+		width_ = width;
+		height_ = height;
+		
 		window_ = glfwCreateWindow(width, height, name, nullptr, nullptr);
 		// can add initVulkan_() to end to initialise in creation of window [RECOMMENDED]
 	}
@@ -45,6 +49,9 @@ private:
 	VkPipeline graphicsPipeline_;
 	VkCommandPool commandPool_;
 	VkCommandBuffer commandBuffer_;
+
+	int width_;
+	int height_;
 
 	void initVulkan_() {
 		createInstance_();
