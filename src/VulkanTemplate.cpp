@@ -177,7 +177,6 @@ private:
 		 return availablePresentModes[0];
 	 }
 
-	 // Add 3D for 3D models support
 	 VkExtent2D chooseSwapExtent_(const VkSurfaceCapabilitiesKHR& capabilities) {
 		 if (capabilities.currentExtent.width != UINT32_MAX) {
 			 return capabilities.currentExtent;
