@@ -1,5 +1,5 @@
 # Vulkan Template
-Template for setting up Vulkan. This project includes the required code for every project. It also contains some blank .spv files. Using slang shader language.
+Template for setting up Vulkan. This project includes the required code for every Vulkan project. It also contains some blank .spv files. Using slang shader language.
 ## What is Vulkan?
 Vulkan is a graphics API developed by the Khronos group. You can download by going to [this](https://vulkan.lunarg.com/sdk/home) website.  
 Vulkan is considered a verbose API due to the huge amount of setup code required when developing. This is why I wrote the setup code for it.  
